@@ -12,19 +12,22 @@ const ProjectBoard = () => {
   const handleAddTask = (e, formData) => {
     e.preventDefault();
     if (taskToUpdate) {
-      const updatedTask = data[taskToUpdate.category].map((task) => {
-        if (task.id === taskToUpdate.id) {
-          return formData;
-        }
-        return task;
-      });
-      setData({
-        ...data,
-        [taskToUpdate.category]: data[taskToUpdate.category].filter(
+      const updatedData = { ...data };
+      if (taskToUpdate.category !== formData.category) {
+        updatedData[taskToUpdate.category] = data[taskToUpdate.category].filter(
           (item) => item.id !== taskToUpdate.id
-        ),
-        [formData.category]: updatedTask,
-      });
+        );
+      }
+
+      
+      if (taskToUpdate.category === formData.category) {
+        updatedData[formData.category] = data[formData.category].map((task) =>
+          task.id === taskToUpdate.id ? formData : task
+        );
+      } else {
+        updatedData[formData.category] = [...data[formData.category], formData];
+      }
+      setData(updatedData);
       setTaskToUpdate(null);
     } else {
       if (
@@ -43,7 +46,6 @@ const ProjectBoard = () => {
         });
       }
     }
-
     setShowModal(false);
   };
   const handleEditTask = (task) => {
@@ -51,11 +53,13 @@ const ProjectBoard = () => {
     setTaskToUpdate({ ...task });
   };
   const handleDeleteTask = (task) => {
-      setData({
-        ...data,
-        [task.category]: data[task.category].filter((item) => item.id !== task.id),
-      })
-  }
+    setData({
+      ...data,
+      [task.category]: data[task.category].filter(
+        (item) => item.id !== task.id
+      ),
+    });
+  };
   const handleCancel = () => {
     setShowModal(false);
   };
