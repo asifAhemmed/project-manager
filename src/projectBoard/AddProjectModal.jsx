@@ -1,14 +1,15 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 
-const AddProjectModal = ({ onAddTask, onCancel }) => {
-  const [formData, setFormData] = useState({
+const AddProjectModal = ({ taskToUpdate,onAddTask, onCancel }) => {
+  const [formData, setFormData] = useState(taskToUpdate || {
     id: crypto.randomUUID(),
     category: "",
     title: "",
     description: "",
     date: "",
   });
+ 
 
   return (
     <div className="w-full max-w-md rounded-lg bg-gray-800 shadow-xl fixed left-[40%]  flex items-center justify-center">
@@ -26,11 +27,12 @@ const AddProjectModal = ({ onAddTask, onCancel }) => {
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
               }
+              
               type="text"
               id="taskName"
               name="taskName"
-              required
               className="w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 shadow-sm focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+              value={formData.title}
             />
           </div>
           <div className="mb-4">
@@ -46,6 +48,7 @@ const AddProjectModal = ({ onAddTask, onCancel }) => {
               }
               id="description"
               name="description"
+              value={formData.description}
               rows="3"
               className="w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 shadow-sm focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
             ></textarea>
@@ -59,8 +62,12 @@ const AddProjectModal = ({ onAddTask, onCancel }) => {
             </label>
             <input
               onChange={(e) =>
-                setFormData({ ...formData, date: e.target.value })
+                setFormData({
+                  ...formData,
+                  date: e.target.value,
+                })
               }
+              value={formData.date}
               type="date"
               id="dueDate"
               name="dueDate"
@@ -81,15 +88,16 @@ const AddProjectModal = ({ onAddTask, onCancel }) => {
               }
               id="category"
               name="category"
+              value={formData.category}
               className="w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white shadow-sm focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
             >
-              <option value="" selected>
+              <option value="Select an option" >
                 Select an option
               </option>
-              <option value="To-Do">To-Do</option>
-              <option value="On Progress">On Progress</option>
-              <option value="Done">Done</option>
-              <option value="Revised">Revised</option>
+              <option value="toDo">To-Do</option>
+              <option value="onProgress">On Progress</option>
+              <option value="done">Done</option>
+              <option value="revise">Revised</option>
             </select>
           </div>
 
@@ -105,7 +113,7 @@ const AddProjectModal = ({ onAddTask, onCancel }) => {
               type="submit"
               className="rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-800"
             >
-              Create Task
+              {taskToUpdate? 'Save Task' : 'Create Task'}
             </button>
           </div>
         </form>

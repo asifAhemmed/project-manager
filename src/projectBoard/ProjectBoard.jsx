@@ -2,34 +2,70 @@ import { TaskContext } from "../contexts";
 import AddProjectModal from "./AddProjectModal";
 import ProjectCard from "./ProjectCard";
 import { useState, useContext } from "react";
+import { toast } from "react-toastify";
 
 const ProjectBoard = () => {
   const [showModal, setShowModal] = useState(false);
+  const [taskToUpdate, setTaskToUpdate] = useState(null);
   const { data, setData } = useContext(TaskContext);
 
   const handleAddTask = (e, formData) => {
     e.preventDefault();
-    if (formData.category === "To-Do") {
+    if (taskToUpdate) {
+      const updatedTask = data[taskToUpdate.category].map((task) => {
+        if (task.id === taskToUpdate.id) {
+          return formData;
+        }
+        return task;
+      });
       setData({
         ...data,
-        toDo: [...data.toDo, formData],
+        [taskToUpdate.category]: data[taskToUpdate.category].filter(
+          (item) => item.id !== taskToUpdate.id
+        ),
+        [formData.category]: updatedTask,
       });
-    } else if (formData.category === "On Progress") {
-      setData({
-        ...data,
-        onProgress: [...data.onProgress, formData],
-      });
-    } else if (formData.category === "Done") {
-      setData({
-        ...data,
-        done: [...data.done, formData],
-      });
+      setTaskToUpdate(null);
     } else {
-      setData({
-        ...data,
-        revise: [...data.revise, formData],
-      });
+      if (
+        formData.title === "" ||
+        formData.description === "" ||
+        formData.date === "" ||
+        formData.category === ""
+      ) {
+        toast.error("Please fill all the fields", {
+          position: "bottom-right",
+        });
+      } else {
+        if (formData.category === "toDo") {
+          setData({
+            ...data,
+            toDo: [...data.toDo, formData],
+          });
+        } else if (formData.category === "onProgress") {
+          setData({
+            ...data,
+            onProgress: [...data.onProgress, formData],
+          });
+        } else if (formData.category === "done") {
+          setData({
+            ...data,
+            done: [...data.done, formData],
+          });
+        } else {
+          setData({
+            ...data,
+            revise: [...data.revise, formData],
+          });
+        }
+      }
     }
+
+    setShowModal(false);
+  };
+  const handleEditTask = (task) => {
+    setShowModal(true);
+    setTaskToUpdate({ ...task });
   };
   const handleCancel = () => {
     setShowModal(false);
@@ -37,7 +73,11 @@ const ProjectBoard = () => {
   return (
     <div className="mx-auto max-w-7xl p-6">
       {showModal && (
-        <AddProjectModal onAddTask={handleAddTask} onCancel={handleCancel} />
+        <AddProjectModal
+          onAddTask={handleAddTask}
+          onCancel={handleCancel}
+          taskToUpdate={taskToUpdate}
+        />
       )}
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-2xl font-bold">Projectify</h2>
@@ -69,10 +109,30 @@ const ProjectBoard = () => {
       </div>
 
       <div className="-mx-2 mb-6 flex flex-wrap">
-        <ProjectCard name="To-Do" color="bg-indigo-600" data={data.toDo} />
-        <ProjectCard name="On Progress" color="bg-yellow-500"  data={data.onProgress}/>
-        <ProjectCard name="Done" color="bg-teal-500" data={data.done}/>
-        <ProjectCard name="Revise" color="bg-rose-500" data={data.revise}/>
+        <ProjectCard
+          name="To-Do"
+          color="bg-indigo-600"
+          data={data.toDo}
+          onEditTask={handleEditTask}
+        />
+        <ProjectCard
+          name="On Progress"
+          color="bg-yellow-500"
+          data={data.onProgress}
+          onEditTask={handleEditTask}
+        />
+        <ProjectCard
+          name="Done"
+          color="bg-teal-500"
+          data={data.done}
+          onEditTask={handleEditTask}
+        />
+        <ProjectCard
+          name="Revise"
+          color="bg-rose-500"
+          data={data.revise}
+          onEditTask={handleEditTask}
+        />
       </div>
     </div>
   );

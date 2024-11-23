@@ -1,7 +1,8 @@
+/* eslint-disable react/prop-types */
 import CardSort from "./CardSort";
 import ContentCard from "./ContentCard";
 
-const ProjectCard = ({ data,name,color }) => {
+const ProjectCard = ({ onEditTask,data,name,color }) => {
   return (
     <div className="mb-4 w-full px-2 sm:w-1/2 md:w-1/4">
       <div className={`rounded-lg ${color} p-4`}>
@@ -10,7 +11,7 @@ const ProjectCard = ({ data,name,color }) => {
           <CardSort />
         </div>
         <div>
-          <ContentCard data={data}/>
+          <ContentCard data={data} onEditTask={onEditTask}/>
         </div>
       </div>
     </div>

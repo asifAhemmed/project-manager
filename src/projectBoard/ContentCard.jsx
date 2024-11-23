@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-const ContentCard = ({ data }) => {
+const ContentCard = ({ data,onEditTask }) => {
   return (
     <>
       {data.map((item) => (
@@ -10,7 +10,7 @@ const ContentCard = ({ data }) => {
             </h4>
 
             <div className="flex gap-2">
-              <svg
+            <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -30,6 +30,7 @@ const ContentCard = ({ data }) => {
                 <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
               </svg>
               <svg
+                onClick={()=>onEditTask(item)}
                 className="h-4 w-4 cursor-pointer text-zinc-300"
                 fill="none"
                 stroke="currentColor"
@@ -49,7 +50,11 @@ const ContentCard = ({ data }) => {
             {item.description}
           </p>
 
-          <p className="mt-6 text-xs text-zinc-400">{item.date}</p>
+          <p className="mt-6 text-xs text-zinc-400">{new Date(item.date).toLocaleDateString('us-en',{
+            year:'numeric',
+            month:'long',
+            day:'numeric'
+          })}</p>
         </div>
       ))}
     </>
