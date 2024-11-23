@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-const ContentCard = ({ data,onEditTask }) => {
+const ContentCard = ({ data,onEditTask,onDeleteTask }) => {
   return (
     <>
       {data.map((item) => (
@@ -11,6 +11,7 @@ const ContentCard = ({ data,onEditTask }) => {
 
             <div className="flex gap-2">
             <svg
+                onClick={()=>onDeleteTask(item)}
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"

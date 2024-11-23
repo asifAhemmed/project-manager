@@ -37,27 +37,10 @@ const ProjectBoard = () => {
           position: "bottom-right",
         });
       } else {
-        if (formData.category === "toDo") {
-          setData({
-            ...data,
-            toDo: [...data.toDo, formData],
-          });
-        } else if (formData.category === "onProgress") {
-          setData({
-            ...data,
-            onProgress: [...data.onProgress, formData],
-          });
-        } else if (formData.category === "done") {
-          setData({
-            ...data,
-            done: [...data.done, formData],
-          });
-        } else {
-          setData({
-            ...data,
-            revise: [...data.revise, formData],
-          });
-        }
+        setData({
+          ...data,
+          [formData.category]: [...data[formData.category], formData],
+        });
       }
     }
 
@@ -67,9 +50,16 @@ const ProjectBoard = () => {
     setShowModal(true);
     setTaskToUpdate({ ...task });
   };
+  const handleDeleteTask = (task) => {
+      setData({
+        ...data,
+        [task.category]: data[task.category].filter((item) => item.id !== task.id),
+      })
+  }
   const handleCancel = () => {
     setShowModal(false);
   };
+
   return (
     <div className="mx-auto max-w-7xl p-6">
       {showModal && (
@@ -114,24 +104,28 @@ const ProjectBoard = () => {
           color="bg-indigo-600"
           data={data.toDo}
           onEditTask={handleEditTask}
+          onDeleteTask={handleDeleteTask}
         />
         <ProjectCard
           name="On Progress"
           color="bg-yellow-500"
           data={data.onProgress}
           onEditTask={handleEditTask}
+          onDeleteTask={handleDeleteTask}
         />
         <ProjectCard
           name="Done"
           color="bg-teal-500"
           data={data.done}
           onEditTask={handleEditTask}
+          onDeleteTask={handleDeleteTask}
         />
         <ProjectCard
           name="Revise"
           color="bg-rose-500"
           data={data.revise}
           onEditTask={handleEditTask}
+          onDeleteTask={handleDeleteTask}
         />
       </div>
     </div>
